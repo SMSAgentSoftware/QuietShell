@@ -29,5 +29,22 @@ QuietShell.exe -Command "$csinfo = Get-ComputerInfo; $csinfo | Out-File C:\Temp\
 # Execute the PowerShell script in a PowerShell process, overriding the current execution policy and not loading the PowerShell profile
 QuietShell.exe -UseProcess -File .\MyScript.ps1 -ExecutionPolicy Bypass -NoProfile
 
-QuietShell.exe -File .\MyScript.ps1 -LogPath "C:\
+# Execute the PowerShell script in an embedded runspace, logging to C:\Temp and including script output in the log file
+QuietShell.exe -File .\MyScript.ps1 -LogPath "C:\Temp" -LogOutputStream
+
+# Execute a script with a parameter
+QuietShell.exe .\MyScript.ps1 "C:\Temp\MyFile.txt"
 ```
+
+## Supported parameters
+| Parameter | Description | Supported execution modes |
+| ---------- | ----------- | -------------------------- |
+| UseRunspace | [Default] Executes the PowerShell in an embedded runspace | Runspace |
+| UseProcess | Executes the PowerShell in an isolated PowerShell process | Process |
+| File | The full path to a PowerShell script to execute | Runspace, Process |
+| (args) | Specify any parameters to pass to the script directly after the script file path | Runspace, Process |
+| Command | The PowerShell command to execute, eg "Get-ComputerInfo" | Runspace, Process |
+| ExecutionPolicy | A supported execution policy. If not specified, the current execution policy will apply | Runspace, Process |
+
+
+
