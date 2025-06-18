@@ -67,7 +67,7 @@ To specify an alternative location for the log file, use the *LogPath* parameter
 By default, the current execution policy for the executing user and scope will be honored. To specify an execution policy, use the *ExecutionPolicy* parameter and provide a supported value. Note that in some cases in may not be possible to override the prevailing execution policy.
 
 ## Execution modes
-By default, PowerShell scripts and commands will be executed in-process using a PowerShell runspace. This provides the best performance, however it can be preferable in some cases to spawn a seperate, isolated PowerShell process for full compatibility. Use the *UseProcess* to run PowerShell in an isolated process.
+By default, PowerShell scripts and commands will be executed in-process using a PowerShell runspace. This provides the best performance, however it can be preferable in some cases to spawn a seperate, isolated PowerShell process for full compatibility. Use the *UseProcess* to run PowerShell in an isolated process. If your script or command calls an external cmdline program (eg dsregcmd.exe) when using Runspace mode, these may use a console window and you may see a brief flash on the screen while they execute. For this scenario, an isolated process will work better and provide a fully silent execution.
 
 ## Default parameters
 By default, the *NoLogo* and *NonInteractive* parameters are specified when executing PowerShell in a separate process. This is non-configurable and ensures efficient execution. Ensure that your PowerShell code does not attempt to interact with the user as this will not be possible.
