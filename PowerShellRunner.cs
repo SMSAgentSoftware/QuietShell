@@ -128,13 +128,16 @@ namespace QuietShell
                         var results = powershell.EndInvoke(asyncResult);
 
                         // Log output
-                        //foreach (var result in results)
-                        //{
-                        //    if (result != null)
-                        //    {
-                        //        _logger.LogInfo($"Output: {result}", "ExecuteWithRunspace");
-                        //    }
-                        //}
+                        if (_options.LogOutputStream)
+                        {
+                            foreach (var result in results)
+                            {
+                                if (result != null)
+                                {
+                                    _logger.LogInfo($"Output: {result}", "ExecuteWithRunspace");
+                                }
+                            }
+                        }
 
                         // Log errors
                         if (powershell.HadErrors)
@@ -234,17 +237,20 @@ namespace QuietShell
 
                 using (var process = new Process { StartInfo = processInfo })
                 {
-                    //var output = new StringBuilder();
                     var errors = new StringBuilder();
 
-                    //process.OutputDataReceived += (s, e) =>
-                    //{
-                        //if (!string.IsNullOrEmpty(e.Data))
-                        //{
-                            //output.AppendLine(e.Data);
-                            //_logger.LogInfo($"Output: {e.Data}", "ExecuteWithProcess");
-                        //}
-                    //};
+                    if (_options.LogOutputStream)
+                    {
+                        var output = new StringBuilder();
+                        process.OutputDataReceived += (s, e) =>
+                        {
+                            if (!string.IsNullOrEmpty(e.Data))
+                            {
+                                output.AppendLine(e.Data);
+                                _logger.LogInfo($"Output: {e.Data}", "ExecuteWithProcess");
+                            }
+                        };
+                    }
 
                     process.ErrorDataReceived += (s, e) =>
                     {
@@ -256,7 +262,10 @@ namespace QuietShell
                     };
 
                     process.Start();
-                    //process.BeginOutputReadLine();
+                    if (_options.LogOutputStream)
+                    {
+                        process.BeginOutputReadLine();
+                    }
                     process.BeginErrorReadLine();
 
                     // Wait for process completion with timeout

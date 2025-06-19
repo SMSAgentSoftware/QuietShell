@@ -33,7 +33,7 @@ namespace QuietShell
                 {
                     Directory.CreateDirectory(directory);
                 }
-                _logFilePath = logPath;
+                _logFilePath = Path.Combine(logPath, $"QuietShell.log"); ;
             }
         }
 

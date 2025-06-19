@@ -19,6 +19,7 @@ namespace QuietShell
         public string WorkingDirectory { get; set; }
         public bool MTA { get; set; }
         public int Timeout { get; set; } = 1800; // Default timeout in seconds
+        public bool LogOutputStream { get; set; } = false; // Default to false for logging output stream
     }
 
     public static class CommandLineParser
@@ -93,14 +94,13 @@ namespace QuietShell
                                 if (i + 1 < args.Length)
                                 {
                                     options.ScriptPath = args[++i];
-                                    // Collect remaining arguments as script parameters
                                     var scriptArgs = new List<string>();
-                                    for (int j = i + 1; j < args.Length; j++)
+                                    // Collect only non-option arguments as script parameters
+                                    while (i + 1 < args.Length && !(args[i + 1].StartsWith("-") || args[i + 1].StartsWith("/")))
                                     {
-                                        scriptArgs.Add(args[j]);
+                                        scriptArgs.Add(args[++i]);
                                     }
                                     options.ScriptArguments = scriptArgs.ToArray();
-                                    return options; // Stop processing after -File
                                 }
                                 break;
 
@@ -147,7 +147,10 @@ namespace QuietShell
                                     options.Timeout = timeout;
                                 }
                                 break;
-
+                            
+                            case "logoutputstream":
+                                options.LogOutputStream = true;
+                                break;
                         }
                     }
                     else
